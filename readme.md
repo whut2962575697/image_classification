@@ -53,7 +53,7 @@
 | 32x32 | 128 | 3e-4 | wrn40_4 | WarmUp + CosineAnnealingLR + RandomCrop + RandomHorizontalFlip + RandomErasing + AutoAugment + CutMix + TTA | 0.1739 | 0.9607 |
 | 32x32 | 128 | 4e-3 | wrn40_4(Mish) | Ranger + CosineAnnealingLR + RandomCrop + RandomHorizontalFlip + RandomErasing + AutoAugment + CutMix | 0.1490 | 0.9601 |
 | 32x32 | 128 | 4e-3 | wrn40_4(Mish) | Ranger + CosineAnnealingLR + RandomCrop + RandomHorizontalFlip + RandomErasing + AutoAugment + CutMix + TTA | 0.1490 | 0.9621 |
-
+ps: 参数调一调应该能更高，由于时间和机器限制，大部分参数没仔细调，而且不加TTA最好的是结果是0.9609，但是模型没保存下来，懒得再训了，就用了0.9601，有条件的可以试试增加分辨率，应该会提高一些
 ## 2.数据和模型的使用
 ### 2.1数据说明
 Fashion-MNIST的目的是要成为MNIST数据集的一个直接替代品。作为算法作者，你不需要修改任何的代码，就可以直接使用这个数据集。Fashion-MNIST的图片大小，训练、测试样本数及类别数与经典MNIST完全相同。
