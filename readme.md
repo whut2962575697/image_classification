@@ -43,13 +43,16 @@
 模型训练策略：   
 - WarmUp 10 epoch 
 - CosineAnnealingLR Scheduler
-- Adam 3e-4 + weight_decay 5e-4
+- Adam 3e-4 + weight_decay 5e-4 / Ranger Optimizer(no warm up) 4e-3
 - epoch 400
 
 ### 1.5结果分析
 | train_size | batch_size | lr | backbone | tricks | test_loss | test_acc |
 | :-----| ----: | :----: | :----: | :----: | :----: | :----: |
 | 32x32 | 128 | 3e-4 | wrn40_4 | WarmUp + CosineAnnealingLR + RandomCrop + RandomHorizontalFlip + RandomErasing + AutoAugment + CutMix | 0.1739 | 0.9579 |
+| 32x32 | 128 | 3e-4 | wrn40_4 | WarmUp + CosineAnnealingLR + RandomCrop + RandomHorizontalFlip + RandomErasing + AutoAugment + CutMix + TTA | 0.1739 | 0.9607 |
+| 32x32 | 128 | 4e-3 | wrn40_4(Mish) | Ranger + CosineAnnealingLR + RandomCrop + RandomHorizontalFlip + RandomErasing + AutoAugment + CutMix | 0.1490 | 0.9601 |
+| 32x32 | 128 | 4e-3 | wrn40_4(Mish) | Ranger + CosineAnnealingLR + RandomCrop + RandomHorizontalFlip + RandomErasing + AutoAugment + CutMix + TTA | 0.1490 | 0.9621 |
 
 ## 2.数据和模型的使用
 ### 2.1数据说明
@@ -106,4 +109,5 @@ Fashion-MNIST的目的是要成为MNIST数据集的一个直接替代品。作�
 ### 4.1项目的文件结构
 详情见github
 ### 4.2项目运行步骤
+
 
