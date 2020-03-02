@@ -110,5 +110,132 @@ Fashion-MNIST的目的是要成为MNIST数据集的一个直接替代品。作�
 ### 4.1项目的文件结构
 详情见github
 ### 4.2项目运行步骤
+#### 4.2.1使用编辑器运行
+为了方便调试，可以直接使用编辑器运行，步骤如下：
+##### (1) 修改config.py中的配置，主要包括硬件环境(cpu/gpu)、输入大小、数据集路径、backbone、优化器、学习率、迭代次数、batchsize、结果日志及模型保存路径等等
+```python
+_C.MODEL = CN()
+_C.MODEL.NAME = "baseline"  # 模型
+_C.MODEL.N_CHANNEL = 3  # 输入通道数
+_C.MODEL.N_CLASS = 10  # 类别数
+_C.MODEL.DEVICE = 'cuda'  # 硬件环境 'cpu' or 'cuda'
+_C.MODEL.DEVICE_IDS = '0d' # 指定gpu '0d' for single gpu, '0,1d' for multi gpu
+_C.MODEL.BACKBONE = 'wrn40_4' # backone 
+_C.MODEL.DROPOUT = 0 # dropout rate
+_C.MODEL.USE_NONLOCAL = False # use nonlocal block
+_C.MODEL.USE_SCSE = False # use scse block
+_C.MODEL.USE_ATTENTION = False # use attention block
 
+
+
+_C.DATALOADER = CN()
+_C.DATALOADER.NUM_WORKERS = 2
+
+
+_C.DATASETS = CN()
+_C.DATASETS.NAMES = ('minist')# Root PATH to the dataset
+_C.DATASETS.DATA_PATH = r'/usr/demo/common_data' # dataset root
+
+_C.DATASETS.TRAIN = CN()
+_C.DATASETS.TRAIN.IMAGE_FOLDER = r'train_rs_imgs' # ignore for fanish minist
+
+
+
+_C.DATASETS.VAL = CN()
+_C.DATASETS.VAL.IMAGE_FOLDER = r'val_rs_imgs' # ignore for fanish minist
+
+
+_C.INPUT = CN()
+
+_C.INPUT.PIXEL_MEAN = [0.28604059698879547, 0.28604059698879547, 0.28604059698879547] # 归一化均值
+_C.INPUT.PIXEL_STD = [0.3202489254311618, 0.3202489254311618, 0.3202489254311618] # 归一化方差
+
+_C.INPUT.RESIZE_TRAIN = (36, 36) # 训练resize 大小
+_C.INPUT.SIZE_TRAIN = (32, 32) # 训练crop 大小
+_C.INPUT.RESIZE_TEST = (36, 36) # 测试resize 大小
+_C.INPUT.SIZE_TEST = (32, 32) # 测试crop大小
+_C.INPUT.PROB = 0.5 # random horizontal flip prob
+
+
+
+# random erasing
+_C.INPUT.RANDOM_ERASE = CN()
+_C.INPUT.RANDOM_ERASE.RE_PROB = 0.5 # random erasing prob
+_C.INPUT.RANDOM_ERASE.RE_MAX_RATIO = 0.4 # random erasing max_ratio
+
+_C.INPUT.USE_MIX_UP = False # use mixup
+_C.INPUT.USE_CUT_MIX = True # use cutmix
+_C.INPUT.USE_AUGMIX = False # use augmix
+_C.INPUT.USE_AUTOAUG = True # use autoaugment
+_C.INPUT.USE_RICAP = False # use ricap
+
+_C.SOLVER = CN()
+
+_C.SOLVER.OPTIMIZER_NAME = "Ranger" # optimizer 'Adam','SGD','Rnager'
+
+
+_C.SOLVER.MAX_EPOCHS = 320 # max epochs
+
+_C.SOLVER.BASE_LR = 4e-3 # base lr
+_C.SOLVER.BIAS_LR_FACTOR = 1 
+
+_C.SOLVER.USE_WARMUP = False # use warm up
+_C.SOLVER.MIN_LR = 4e-5 # cosin CosineAnnealing min lr
+
+_C.SOLVER.MOMENTUM = 0.9 # momentum
+
+
+_C.SOLVER.WEIGHT_DECAY = 0.0005 # weight decay
+_C.SOLVER.WEIGHT_DECAY_BIAS = 0.0005 # weight decay bias
+
+_C.SOLVER.GAMMA = 0.1
+_C.SOLVER.STEPS = [40, 70]
+
+_C.SOLVER.WARMUP_FACTOR = 0.01
+_C.SOLVER.WARMUP_EPOCH = 10
+_C.SOLVER.WARMUP_BEGAIN_LR = 3e-6
+_C.SOLVER.WARMUP_METHOD = "linear"
+
+_C.SOLVER.CHECKPOINT_PERIOD = 1 # checkpoint频率
+_C.SOLVER.LOG_PERIOD = 100 # 日志打印batch频率
+_C.SOLVER.EVAL_PERIOD = 1 # 模型验证频率
+_C.SOLVER.START_SAVE_EPOCH = 250 # 模型开始保存的轮数
+
+_C.SOLVER.TENSORBOARD = CN()
+_C.SOLVER.TENSORBOARD.USE = True # 使用tensorboard
+_C.SOLVER.TENSORBOARD.LOG_PERIOD = 20 # tensorboard记录频率
+
+_C.SOLVER.PER_BATCH = 128 # batch size
+_C.SOLVER.SYNCBN = False # for multi gpu syncbn
+_C.SOLVER.RESUME = False # 模型续训
+_C.SOLVER.RESUME_CHECKPOINT = '' # 模型续训checkpoint
+
+_C.OUTPUT_DIR = CN()
+_C.OUTPUT_DIR = r'/usr/demo/common_data/minist_outputs' # 保存路径
+```
+(2)运行train.py
+#### 4.2.2使用shell脚本运行
+(1)修改configs/baseline_train.yml，设置参数与config.py中类似
+(2)在shells/baseline_train.sh脚本中动态设置参数
+```bash
+#!/usr/bin/env bash
+
+ DATA_DIR='/usr/demo/common_data' # 数据集root path
+ SAVE_DIR='/usr/demo/common_data/minist_outputs/ exp-baseline-wrn40_4-warmup10-epo400-32x32-use_nonlocal' # 保存路径
+ python train.py --config_file='configs/baseline_train.yml' \
+     SOLVER.BASE_LR '3e-4' SOLVER.WARMUP_EPOCH "10" SOLVER.MAX_EPOCHS "400" SOLVER.START_SAVE_EPOCH "300" SOLVER.EVAL_PERIOD "1" \
+     SOLVER.PER_BATCH "128" \
+     INPUT.SIZE_TRAIN "([32,32])" INPUT.SIZE_TEST "([32,32])" INPUT.RESIZE_TRAIN "([36,36])" INPUT.RESIZE_TEST "([36,36])" INPUT.USE_AUTOAUG "True" INPUT.USE_CUT_MIX "True" \
+     MODEL.NAME "baseline" MODEL.BACKBONE "wrn40_4" MODEL.USE_NONLOCAL "True"\
+     DATASETS.DATA_PATH "('${DATA_DIR}')" \
+     OUTPUT_DIR "('${SAVE_DIR}')"
+```
+(3)运行./shells/baseline.sh   
+ps: 注意先修改shell脚本权限   
+#### 测试过程
+(1)修改inference.py中的模型文件
+```python
+para_dict = torch.load(r'/usr/demo/common_data/baseline_epoch363.pth')
+```
+(2)运行 inference.py
 
