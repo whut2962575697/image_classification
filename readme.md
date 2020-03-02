@@ -213,10 +213,10 @@ _C.SOLVER.RESUME_CHECKPOINT = '' # 模型续训checkpoint
 _C.OUTPUT_DIR = CN()
 _C.OUTPUT_DIR = r'/usr/demo/common_data/minist_outputs' # 保存路径
 ```
-(2)运行train.py
+##### (2)运行train.py
 #### 4.2.2使用shell脚本运行
-(1)修改configs/baseline_train.yml，设置参数与config.py中类似
-(2)在shells/baseline_train.sh脚本中动态设置参数
+##### (1)修改configs/baseline_train.yml，设置参数与config.py中类似
+##### (2)在shells/baseline_train.sh脚本中动态设置参数
 ```bash
 #!/usr/bin/env bash
 
@@ -230,12 +230,12 @@ _C.OUTPUT_DIR = r'/usr/demo/common_data/minist_outputs' # 保存路径
      DATASETS.DATA_PATH "('${DATA_DIR}')" \
      OUTPUT_DIR "('${SAVE_DIR}')"
 ```
-(3)运行./shells/baseline.sh   
+##### (3)运行./shells/baseline.sh   
 ps: 注意先修改shell脚本权限   
 #### 测试过程
-(1)修改inference.py中的模型文件
+##### (1)修改inference.py中的模型文件
 ```python
 para_dict = torch.load(r'/usr/demo/common_data/baseline_epoch363.pth')
 ```
-(2)运行 inference.py
+##### (2)运行 inference.py
 
