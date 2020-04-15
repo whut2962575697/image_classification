@@ -216,7 +216,7 @@ class BaseTrainer(object):
             if r < 0.5:
                 self.use_cut_mix = True
                 lam = np.random.beta(1.0, 1.0)
-                rand_index = torch.randperm(data.size()[0]).cuda()
+                rand_index = torch.randperm(data.size()[0]).to(self.device)
                 target_a = target
                 target_b = target[rand_index]
                 bbx1, bby1, bbx2, bby2 = rand_bbox(data.size(), lam)
