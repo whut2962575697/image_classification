@@ -199,7 +199,7 @@ class BaseTrainer(object):
                 x_k = np.random.randint(0, I_x - w_[k] + 1)
                 y_k = np.random.randint(0, I_y - h_[k] + 1)
                 cropped_images[k] = input[idx][:, :, x_k:x_k + w_[k], y_k:y_k + h_[k]]
-                c_[k] = target[idx].cuda()
+                c_[k] = target[idx].to(self.device)
                 W_[k] = w_[k] * h_[k] / (I_x * I_y)
 
             patched_images = torch.cat(
