@@ -67,6 +67,6 @@ urllib3==1.25.8
 visdom==0.1.8.9
 wcwidth==0.1.8
 websocket-client==0.57.0
-websockets==8.1
+websockets==9.1
 yacs==0.1.6
 yarg==0.1.9
